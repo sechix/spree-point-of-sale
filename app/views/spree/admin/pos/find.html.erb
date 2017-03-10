@@ -1,0 +1,83 @@
+<% unless @variants.blank? %>
+<table>
+  <tr>
+    <td>
+    <table class="index table" id='listing_products'>
+      <tr>
+          <th>SKU</th>
+          <th><%= Spree.t("image") %></th>
+          <th><%= sort_link @search,:product_name, Spree.t("name"), {}, {:title => 'admin_products_listing_name_title'} %></th>
+          <th><%= sort_link @search,:price, Spree.t("master_price") %></th>
+          <th><%= Spree.t("select") %></th>
+      </tr>
+      <% @variants.each do |variant| %>
+      <% next if variant.is_master and variant.product.has_variants?%>
+        <tr <%= 'style="color:red;"' if variant.deleted? %> id="<%= dom_id variant %>">
+          <td><%= variant.sku %></td>
+          <td><% if variant.images.first  %>
+              <%= image_tag variant.images.first.attachment.url(:mini) %>
+              <%elsif variant.product.images.first %>
+              <%= image_tag variant.product.images.first.attachment.url(:mini) %>
+              <% end %>
+          </td>
+          <td> <%= link_to( "#{variant.name} #{variant.options_text}" , edit_admin_product_url(variant.product)) %>
+          <br> <%== variant.description[0 .. 200] if variant.description%></td>
+          <td><%= variant.price %></td>
+          <td class="actions">
+              <%= link_to add_admin_pos_path(number: @order.number, item: variant.id) do %>
+                <span class='glyphicon glyphicon-plus'></span>
+              <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+    <% @pos = @variants %>
+    </td>
+  </tr>
+</table>
+<%= paginate @variants %>
+<% else %>
+No Result Found
+<% end %>
+<% content_for :sidebar do %>
+  <div>
+    <%= button_to "Back To Order", admin_pos_show_order_path(:number => @order.number), method: :get %>
+  </div>
+  <%= search_form_for   @search , :url => "/admin/pos/find/#{@order.number}/" do |f| %>
+    <div class="box">
+      <h3><%= Spree.t(:search) %></h3>
+      <p>
+        <%= f.label :product_name_cont, Spree.t("name") %><br />
+        <%= f.text_field :product_name_cont, :size => 15 %>
+      </p>
+      <p>
+        <%= f.label :product_description_cont, Spree.t("description") %><br />
+        <%= f.text_field :product_description_cont, :size => 15 %>
+      </p>
+      <p>
+        <%= f.label :product_product_properties_value_cont , Spree.t(:properties_value)  %><br />
+        <%= f.text_field :product_product_properties_value_cont, :size => 15 %>
+      </p>
+      <p>
+        <%= f.label :product_option_name_cont , Spree.t(:option_name_cont)  %><br />
+        <%= f.text_field :option_values_name_cont, :size => 15 %>
+      </p>
+      <p>
+        <%= f.label :sku_cont, Spree.t("sku") %><br />
+        <%= f.text_field :sku_cont, :size => 15 %>
+      </p>
+      <p>
+        <%= f.label :prices_amount_gteq, Spree.t("price_min") %><br />
+        <%= f.text_field :prices_amount_gteq, :size => 15 %>
+      </p>
+      <p>
+        <%= f.label :prices_amount_lteq, Spree.t("price_max") %><br />
+        <%= f.text_field :prices_amount_lteq, :size => 15 %>
+      </p>
+
+      <p class="form-buttons">
+        <%= button Spree.t("search") %>
+      </p>
+    </div>
+  <% end %>
+<%end%>

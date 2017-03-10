@@ -1,0 +1,16 @@
+\#*
+*~
+.#*
+.DS_Store
+.idea
+.project
+tmp
+nbproject
+*.swp
+log/
+config/environment.rb
+config/database.yml
+app/controllers/application_controller.rb
+coverage/
+Gemfile.lock
+spec/dummy
