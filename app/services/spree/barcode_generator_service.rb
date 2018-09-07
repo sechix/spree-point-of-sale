@@ -12,7 +12,7 @@ module Spree
     end
 
     def append_barcode_to_pdf_for_variant(variant, pdf = empty_pdf)
-      [ variant.name, variant.options_text, (variant.price.to_s + current_symbol) ].each { |item| pdf.text(item) }
+      [ variant.name, variant.options_text, (variant.product.master.price.to_s + current_symbol) ].each { |item| pdf.text(item) }
 
       barcode = get_barcode(variant)
       pdf.image(StringIO.new(barcode.to_png(xdim: 5)), width: 50.mm, height: 10.mm, margin: 2.mm) if barcode
