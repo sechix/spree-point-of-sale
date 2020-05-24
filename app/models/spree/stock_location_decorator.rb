@@ -4,8 +4,6 @@ module Spree
     scope :stores, -> { where(store: true) }
     scope :not_store, -> { where.not(store: true) }
 
-    validates_associated :address
-
     def can_supply?(quantity, variant)
       quantity <= stock_items.find_by(variant_id: variant.id).count_on_hand
     end
